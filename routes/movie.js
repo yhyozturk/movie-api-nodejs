@@ -91,7 +91,7 @@ router.get('/top10', (req, res) => {
   });
 });
 
-
+// belirlenen iki tarih arasında sisteme eklenen filmleri listeler.
 router.get('/between/:start_year/:end_year', (req, res) => {
   const { start_year, end_year } = req.params;
   const promise = Movie.find(
@@ -105,6 +105,8 @@ router.get('/between/:start_year/:end_year', (req, res) => {
     res.json(err);
   });
 });
+
+//Yönetmen eklemeyi sağlar.
 
 
 module.exports = router;
