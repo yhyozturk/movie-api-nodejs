@@ -15,18 +15,16 @@ router.get('/', (req, res, next) => {
 
 router.post('/register', (req, res, next) => {
   const { username, password } = req.body;
+  const user = new User({ username, password });
 
-  bcrypt.hash(password, 10).then((hash) => {
-    const user = new User({ username, password: hash });
+  const promise = user.save();
 
-    const promise = user.save();
-
-    promise.then((data) => {
-      res.json(data);
-    }).catch((err) => {
-      res.json(err);
-    });
+  promise.then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    res.json(err);
   });
+
 });
 
 router.post('/authenticate', (req, res) => {
@@ -44,27 +42,25 @@ router.post('/authenticate', (req, res) => {
       });
     }
     else {
-      bcrypt.compare(password, user.password).then((result) => {
-        if (!result) {
-          res.json({
-            status: false,
-            message: 'Authentication failed, wrong password.'
-          });
-        }
-        else {
-          const payload = {
-            username
-          };
-          const token = jwt.sign(payload, req.app.get('api_secret_key'), {
-            expiresIn: 720 // 12 saat
-          });
+      if (password != user.password) {
+        res.json({
+          status: false,
+          message: 'Authentication failed, wrong password.'
+        });
+      }
+      else {
+        const payload = {
+          username
+        };
+        const token = jwt.sign(payload, req.app.get('api_secret_key'), {
+          expiresIn: 720 // 12 saat
+        });
 
-          res.json({
-            status: true,
-            token
-          });
-        }
-      });
+        res.json({
+          status: true,
+          token
+        });
+      }
     }
   });
 });
