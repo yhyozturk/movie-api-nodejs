@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
     {
       $unwind: '$director',
     },
-    
+
   ]);
   promise.then((data) => {
     res.json(data);
@@ -54,7 +54,8 @@ router.put('/updateMovie/:movie_id', (req, res, next) => {
   promise.then((movie) => {
     if (!movie)
       next({ message: 'The movie was not found', code: 99 }); // bu satır ile app.js te bulunan res.json({error}) kısmına iletim yapılıyor.
-    res.json(movie);
+    
+      res.json(movie);
   }).catch((err) => {
     res.json(err);
   });
@@ -87,7 +88,7 @@ router.post('/addMovie', (req, res, next) => {
    }); */
   const promise = movie.save();
   promise.then((data) => {
-    res.json({ status: 1 });
+    res.json(data);
   }).catch((err) => {
     res.json(err);
   });
